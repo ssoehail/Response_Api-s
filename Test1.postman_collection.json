@@ -1,0 +1,415 @@
+{
+	"info": {
+		"_postman_id": "53215f34-7c6a-4ea8-9cb8-05c7385c1e71",
+		"name": "Test1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5660090"
+	},
+	"item": [
+		{
+			"name": "account_trendline",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "key",
+							"value": "VR-API-KEY",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "7ef761260c4f75a4bcddd412",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-SuppAcct",
+						"value": "{{suppacct}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"account_id\": \"{{suppacct}}\",\r\n    \"action\": \"fetchDetails\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://vrapidev.dev-usa-gke.int.cision.com/api/v03/account_trendline/?suppacct={{suppacct}}",
+					"protocol": "https",
+					"host": [
+						"vrapidev",
+						"dev-usa-gke",
+						"int",
+						"cision",
+						"com"
+					],
+					"path": [
+						"api",
+						"v03",
+						"account_trendline",
+						""
+					],
+					"query": [
+						{
+							"key": "suppacct",
+							"value": "{{suppacct}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "release_list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://vrapidev.dev-usa-gke.int.cision.com/api/v03/release_list/?suppacct={{suppacct}}",
+					"protocol": "https",
+					"host": [
+						"vrapidev",
+						"dev-usa-gke",
+						"int",
+						"cision",
+						"com"
+					],
+					"path": [
+						"api",
+						"v03",
+						"release_list",
+						""
+					],
+					"query": [
+						{
+							"key": "suppacct",
+							"value": "{{suppacct}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "account_stat_total",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Define datasets (suppacct values)\r",
+							"var suppacctValues = [916139, 913702, 9140472];\r",
+							"\r",
+							"// Define the sequence of API requests\r",
+							"var apiSequence = [\"account_trendline\", \"release_list\", \"account_stat_total\"];  // Modify based on your APIs\r",
+							"\r",
+							"// Retrieve or initialize the current dataset index (tracks which suppacct is used)\r",
+							"var currentIndex = pm.collectionVariables.get(\"currentIndex\");\r",
+							"if (!currentIndex) {\r",
+							"    currentIndex = 0;\r",
+							"} else {\r",
+							"    currentIndex = parseInt(currentIndex, 10);\r",
+							"}\r",
+							"\r",
+							"// Retrieve or initialize the current API step (tracks which API is running)\r",
+							"var currentApiStep = pm.collectionVariables.get(\"currentApiStep\");\r",
+							"if (!currentApiStep) {\r",
+							"    currentApiStep = 0;\r",
+							"} else {\r",
+							"    currentApiStep = parseInt(currentApiStep, 10);\r",
+							"}\r",
+							"\r",
+							"// Set the current suppacct value\r",
+							"pm.collectionVariables.set(\"suppacct\", suppacctValues[currentIndex]);\r",
+							"\r",
+							"// Log for debugging\r",
+							"console.log(`Running ${apiSequence[currentApiStep]} for suppacct: ${suppacctValues[currentIndex]}`);\r",
+							"\r",
+							"// Increment suppacct index\r",
+							"currentIndex++;\r",
+							"\r",
+							"// If all suppacct values have been used, reset it and move to the next API\r",
+							"if (currentIndex >= suppacctValues.length) {\r",
+							"    currentIndex = 0;  // Reset suppacct index\r",
+							"    currentApiStep++;  // Move to the next API in sequence\r",
+							"}\r",
+							"\r",
+							"// If all APIs have been executed, reset the API sequence (or stop)\r",
+							"if (currentApiStep >= apiSequence.length) {\r",
+							"    console.log(\"All APIs executed for all suppacct values. Resetting sequence.\");\r",
+							"    currentApiStep = 0; // Reset if looping is required\r",
+							"}\r",
+							"\r",
+							"// Save the updated indices\r",
+							"pm.collectionVariables.set(\"currentIndex\", currentIndex);\r",
+							"pm.collectionVariables.set(\"currentApiStep\", currentApiStep);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://vrapidev.dev-usa-gke.int.cision.com/api/v03/account_stat_total/?suppacct={{suppacct}}&stats=engagements",
+					"protocol": "https",
+					"host": [
+						"vrapidev",
+						"dev-usa-gke",
+						"int",
+						"cision",
+						"com"
+					],
+					"path": [
+						"api",
+						"v03",
+						"account_stat_total",
+						""
+					],
+					"query": [
+						{
+							"key": "suppacct",
+							"value": "{{suppacct}}"
+						},
+						{
+							"key": "stats",
+							"value": "engagements"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "release_asset_details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://vrapidev.dev-usa-gke.int.cision.com/api/v03/release_asset_details/?story_number={{storyNumber}}&story_date={{storyDate}}",
+					"protocol": "https",
+					"host": [
+						"vrapidev",
+						"dev-usa-gke",
+						"int",
+						"cision",
+						"com"
+					],
+					"path": [
+						"api",
+						"v03",
+						"release_asset_details",
+						""
+					],
+					"query": [
+						{
+							"key": "story_number",
+							"value": "{{storyNumber}}"
+						},
+						{
+							"key": "story_date",
+							"value": "{{storyDate}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "release_traffic_sources",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://vrapidev.dev-usa-gke.int.cision.com/api/v03/release_traffic_sources/?story_number={{storyNumber}}&story_date={{storyDate}}&group=1&prp=true",
+					"protocol": "https",
+					"host": [
+						"vrapidev",
+						"dev-usa-gke",
+						"int",
+						"cision",
+						"com"
+					],
+					"path": [
+						"api",
+						"v03",
+						"release_traffic_sources",
+						""
+					],
+					"query": [
+						{
+							"key": "story_number",
+							"value": "{{storyNumber}}"
+						},
+						{
+							"key": "story_date",
+							"value": "{{storyDate}}"
+						},
+						{
+							"key": "group",
+							"value": "1"
+						},
+						{
+							"key": "prp",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "release_meta_data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://vrapidev.dev-usa-gke.int.cision.com/api/v03/release_meta_data/?story_number={{storyNumber}}&story_date={{storyDate}}&suppacct={{suppacct}}",
+					"protocol": "https",
+					"host": [
+						"vrapidev",
+						"dev-usa-gke",
+						"int",
+						"cision",
+						"com"
+					],
+					"path": [
+						"api",
+						"v03",
+						"release_meta_data",
+						""
+					],
+					"query": [
+						{
+							"key": "story_number",
+							"value": "{{storyNumber}}"
+						},
+						{
+							"key": "story_date",
+							"value": "{{storyDate}}"
+						},
+						{
+							"key": "suppacct",
+							"value": "{{suppacct}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "7ef761260c4f75a4bcddd412",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "VR-API-KEY",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"try {\r",
+					"    var tok = JSON.parse(responseBody);\r",
+					"    \r",
+					"    if (tok.accessToken) {\r",
+					"        pm.environment.set(\"token\", tok.accessToken);\r",
+					"    } else {\r",
+					"        console.warn(\"Warning: accessToken not found in response.\");\r",
+					"    }\r",
+					"} catch (error) {\r",
+					"    console.error(\"Error parsing response body:\", error);\r",
+					"}\r",
+					"\r",
+					"pm.test(\"Response status is 200\", function () {\r",
+					"    pm.response.to.have.status(200);\r",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "suppacct",
+			"value": ""
+		},
+		{
+			"key": "currentIndex",
+			"value": ""
+		},
+		{
+			"key": "currentApiStep",
+			"value": ""
+		}
+	]
+}
