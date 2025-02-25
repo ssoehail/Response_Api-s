@@ -1,36 +1,35 @@
-# This is a basic workflow to help you get started with Actions
+name: Run Postman Tests
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main  # Runs on pushes to the main branch
+  pull_request: # Runs on any pull request to any branch
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest  # The environment where the tests run
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3  # Clones the repo into the runner
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # Installs Node.js 18 (required for Newman)
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Install Newman (Postman CLI)
+        run: npm install -g newman  # Installs Newman globally
+
+      - name: Run Postman Tests
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          newman run collection.json -e environment.json --reporters cli,junit --reporter-junit-export results.xml
+        # Runs Postman tests using Newman and generates a JUnit XML report
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: postman-results
+          path: results.xml
+        # Saves the test results XML file as an artifact in GitHub Actions
