@@ -24,7 +24,7 @@ jobs:
 
       - name: Run Postman Tests
         run: |
-          newman run collection.json -e environment.json --reporters cli,junit --reporter-junit-export results.xml
+          newman run environment.json -d data.csv --reporters cli,junit --reporter-junit-export results.xml
         # Runs Postman tests using Newman and generates a JUnit XML report
 
       - name: Upload Test Results
